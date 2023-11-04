@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Notepad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(255, 156, 86);
+            /* display: flex; */
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #notes {
+            width: 1200px;
+            height: 200px;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        #deletedNotes {
+            width: 1200px;
+            height: 200px;
+            background-color: white;
+            border: 1px solid #000;
+            padding: 10px;
+        }   
+
+        #savedNotes {
+            width: 1200px;
+            height: 200px;
+            background-color: white;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(40, 26, 29, 0.388);
+            padding: 20px;
+            gap: 20px;
+            border-radius: 20px ;
+            margin: 10px auto;
+        }
+        .logo
+        {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text">
+        <h1 align="center" style="color:lightblue">NOTEPAD</h1>
+        <img src="D:\notepadmodified\note.jpeg" class="logo"></img>
+    </div>
+    <div class="area">
+        <textarea id="notes" placeholder="Write your notes here..."></textarea>
+        <button style="color:black" onclick="saveNote()">Save</button>
+        <button style="color:black" onclick="deleteNote()">Delete</button>
+    </div>
+    <h2>Recently Saved</h2>
+    <div id="savedNotes"></div>
+
+    <h2>Recently Deleted</h2>
+    <div id="deletedNotes"></div>
+
+    <script>
+        let deletedNotes = [];
+        let savedNotes = [];
+
+        function saveNote() {
+            let note = document.getElementById('notes').value;
+            if (note.trim() !== '') {
+                localStorage.setItem('savedNote', note);
+                savedNotes.push({
+                    note: note,
+                    time: new Date().toLocaleString()
+                });
+                displaySavedNotes();
+                document.getElementById('notes').value = '';
+            }
+        }
+
+        function deleteNote() {
+            let note = localStorage.getItem('savedNote');
+            if (note) {
+                deletedNotes.push({
+                    note: note,
+                    time: new Date().toLocaleString()
+                });
+
+                if (deletedNotes.length > 30) {
+                    deletedNotes.shift();
+                }
+
+                localStorage.removeItem('savedNote');
+                displayDeletedNotes();
+            }
+        }
+
+        function displayDeletedNotes() {
+            let deletedNotesDiv = document.getElementById('deletedNotes');
+            deletedNotesDiv.innerHTML = '';
+            deletedNotes.forEach(function (item) {
+                let p = document.createElement('p');
+                p.innerText = item.note + " - " + item.time;
+                deletedNotesDiv.appendChild(p);
+            });
+        }
+
+        function displaySavedNotes() {
+            let savedNotesDiv = document.getElementById('savedNotes');
+            savedNotesDiv.innerHTML = '';
+            savedNotes.forEach(function (item) {
+                let p = document.createElement('p');
+                p.innerText = item.note + " - " + item.time;
+                savedNotesDiv.appendChild(p);
+            });
+        }
+
+        displayDeletedNotes();
+        displaySavedNotes();
+    </script>
+</body>
+
+</html>
